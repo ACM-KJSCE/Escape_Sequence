@@ -1,0 +1,89 @@
+import { useState, useEffect } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase/config";
+
+function Leaderboard() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "allowed_users"));
+        const leaderboardData = querySnapshot.docs.map((doc) => {
+          const userData = doc.data();
+          const timestamps = userData.timestamps || {};
+          
+          // Find the latest timestamp (highest question number)
+          let latestTimestamp = null;
+          if (timestamps) {
+            const questionIds = Object.keys(timestamps).map(Number).sort((a, b) => b - a);
+            if (questionIds.length > 0) {
+              latestTimestamp = timestamps[questionIds[0]];
+            }
+          }
+          
+          return {
+            email: doc.id,
+            name: userData.name || doc.id.split("@")[0],
+            points: userData.points || 0,
+            latestTimestamp: latestTimestamp,
+          };
+        });
+
+        // Sort users by points first, then by latest timestamp (if points are equal)
+        const sortedUsers = leaderboardData.sort((a, b) => {
+          if (b.points === a.points) {
+            // If both users have timestamps, compare them
+            if (a.latestTimestamp && b.latestTimestamp) {
+              // Parse timestamps like "00:17:42" into comparable values
+              const parseTime = (timeStr) => {
+                if (!timeStr) return Infinity;
+                const [hours, minutes, seconds] = timeStr.split(":").map(Number);
+                return hours * 3600 + minutes * 60 + seconds;
+              };
+              
+              // Lower time (faster completion) should be ranked higher
+              return parseTime(a.latestTimestamp) - parseTime(b.latestTimestamp);
+            }
+            
+            // If only one has a timestamp, that user goes first
+            return a.latestTimestamp ? -1 : b.latestTimestamp ? 1 : 0;
+          }
+          return b.points - a.points;
+        });
+        
+        setUsers(sortedUsers);
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
+
+  return (
+    <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
+      <h2 className="text-2xl font-bold text-white mb-4">Leaderboard</h2>
+      <ul className="space-y-3">
+        {users.map((user, index) => (
+          <li
+            key={user.email}
+            className="flex justify-between bg-gray-700 px-4 py-2 rounded-lg"
+          >
+            <span className="text-white font-medium">
+              {index + 1}. {user.name}
+            </span>
+            <div className="flex flex-col items-end">
+              <span className="text-green-400 font-bold">{user.points} pts</span>
+              {user.latestTimestamp && (
+                <span className="text-gray-400 text-xs">Last: {user.latestTimestamp}</span>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default Leaderboard;
