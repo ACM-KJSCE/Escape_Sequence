@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import DashBoard from "../pages/DashBoard.jsx";
-import SignIn from "../pages/signIn.jsx";
+import SignIn from "../pages/SignIn.jsx";
 import AdminPanel from "../pages/AdminPanel.jsx";
 
 
