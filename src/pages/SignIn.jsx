@@ -39,7 +39,7 @@ function SignIn() {
         <form className="space-y-6" onSubmit={handleSignIn}>
           <div>
             <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
-              Enter your email
+              Enter your teamId
             </label>
             <div className="mt-2">
               <input

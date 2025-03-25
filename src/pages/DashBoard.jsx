@@ -17,8 +17,8 @@ function Dashboard() {
 
   // Start time (24-hour format)
   const quizStartTime = {
-    hour: 10,
-    minute: 25,
+    hour: 22,
+    minute: 36,
     second: 0
   };
 

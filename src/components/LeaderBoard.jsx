@@ -30,23 +30,18 @@ function Leaderboard() {
           };
         });
 
-        // Sort users by points first, then by latest timestamp (if points are equal)
         const sortedUsers = leaderboardData.sort((a, b) => {
           if (b.points === a.points) {
-            // If both users have timestamps, compare them
             if (a.latestTimestamp && b.latestTimestamp) {
-              // Parse timestamps like "00:17:42" into comparable values
               const parseTime = (timeStr) => {
                 if (!timeStr) return Infinity;
                 const [hours, minutes, seconds] = timeStr.split(":").map(Number);
                 return hours * 3600 + minutes * 60 + seconds;
               };
               
-              // Lower time (faster completion) should be ranked higher
               return parseTime(a.latestTimestamp) - parseTime(b.latestTimestamp);
             }
             
-            // If only one has a timestamp, that user goes first
             return a.latestTimestamp ? -1 : b.latestTimestamp ? 1 : 0;
           }
           return b.points - a.points;
@@ -73,11 +68,11 @@ function Leaderboard() {
             <span className="text-white font-medium">
               {index + 1}. {user.name}
             </span>
+            {user.latestTimestamp && (
+                <span className="text-gray-400">Last: {user.latestTimestamp}</span>
+              )}
             <div className="flex flex-col items-end">
               <span className="text-green-400 font-bold">{user.points} pts</span>
-              {user.latestTimestamp && (
-                <span className="text-gray-400 text-xs">Last: {user.latestTimestamp}</span>
-              )}
             </div>
           </li>
         ))}
