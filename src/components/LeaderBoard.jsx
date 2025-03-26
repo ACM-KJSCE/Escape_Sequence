@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/config";
+import { onSnapshot } from "firebase/firestore";
 
 function Leaderboard() {
   const [users, setUsers] = useState([]);
@@ -55,6 +56,54 @@ function Leaderboard() {
 
     fetchLeaderboard();
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "allowed_users"), (querySnapshot) => {
+      // console.log(querySnapshot)
+      // console.log(querySnapshot.docs)
+      // console.log(querySnapshot.docs[0])
+      const leaderboardData = querySnapshot.docs.map((doc) => {
+        const userData = doc.data();
+        const timestamps = userData.timestamps || {};
+        
+        let latestTimestamp = null;
+        if (timestamps) {
+          const questionIds = Object.keys(timestamps).map(Number).sort((a, b) => b - a);
+          if (questionIds.length > 0) {
+            latestTimestamp = timestamps[questionIds[0]];
+          }
+        }
+        
+        return {
+          email: doc.id,
+          name: userData.name || doc.id.split("@")[0],
+          points: userData.points || 0,
+          latestTimestamp: latestTimestamp,
+        };
+      });
+
+      const sortedUsers = leaderboardData.sort((a, b) => {
+        if (b.points === a.points) {
+          if (a.latestTimestamp && b.latestTimestamp) {
+            const parseTime = (timeStr) => {
+              if (!timeStr) return Infinity;
+              const [hours, minutes, seconds] = timeStr.split(":").map(Number);
+              return hours * 3600 + minutes * 60 + seconds;
+            };
+            
+            return parseTime(a.latestTimestamp) - parseTime(b.latestTimestamp);
+          }
+          return a.latestTimestamp ? -1 : b.latestTimestamp ? 1 : 0;
+        }
+        return b.points - a.points;
+      });
+      
+      setUsers(sortedUsers);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
 
   return (
     <div className="bg-gray-800 rounded-xl p-6 shadow-lg">

@@ -42,14 +42,12 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
               <li key={item.id}>
                 <button
                   onClick={() => onQuestionChange(item.id)}
-                  disabled={!isAvailable}
+                  disabled={!isAvailable || isCompleted}
                   className={`w-full text-left px-4 py-2 rounded-lg transition-colors flex items-center justify-between
                     ${
                       activeQuestion === item.id
                         ? "bg-purple-600 text-white"
-                        : isAvailable
-                          ? "text-gray-300 hover:bg-gray-700"
-                          : "text-gray-500 bg-gray-700 cursor-not-allowed"
+                        : isAvailable ? isCompleted ? "cursor-not-allowed" : "text-white hover:bg-gray-700" : "text-gray-500"
                     }`}
                 >
                   <span>{item.label}</span>
