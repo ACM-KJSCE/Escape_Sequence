@@ -1,54 +1,82 @@
 import { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/config";
-import { onSnapshot } from "firebase/firestore";
+
+
+function parseTimeStr(timeStr) {
+  const parts = timeStr.split(":").map(Number);
+  let hours = 0, minutes = 0, seconds = 0;
+  if (parts.length === 2) {
+    [minutes, seconds] = parts;
+  } else if (parts.length === 3) {
+    [hours, minutes, seconds] = parts;
+  }
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+function formatTime(totalSeconds) {
+  const hh = Math.floor(totalSeconds / 3600);
+  const mm = Math.floor((totalSeconds % 3600) / 60);
+  const ss = totalSeconds % 60;
+  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
+}
 
 function Leaderboard() {
   const [users, setUsers] = useState([]);
+
+  const processData = (querySnapshot) => {
+    const leaderboardData = querySnapshot.docs.map((doc) => {
+      const userData = doc.data();
+      const timestamps = userData.timestamps || {};
+
+      let latestTimestamp = null;
+      if (timestamps) {
+        const questionIds = Object.keys(timestamps)
+          .map(Number)
+          .sort((a, b) => b - a);
+        if (questionIds.length > 0) {
+          latestTimestamp = timestamps[questionIds[0]];
+        }
+      }
+
+      return {
+        email: doc.id,
+        name: userData.name || doc.id.split("@")[0],
+        points: userData.points || 0,
+        originalTimestamp: latestTimestamp,
+        bonusTime: userData.bonusTime || 0
+      };
+    });
+
+    const sortedUsers = leaderboardData
+      .map(user => {
+        let adjustedTimestamp = user.originalTimestamp;
+        if (user.originalTimestamp && user.bonusTime !== 0) {
+          const totalSeconds = parseTimeStr(user.originalTimestamp);
+          const adjustedTotalSeconds = totalSeconds + (user.bonusTime * 60);
+          adjustedTimestamp = formatTime(adjustedTotalSeconds);
+        }
+        return { ...user, latestTimestamp: adjustedTimestamp };
+      })
+      .sort((a, b) => {
+        if (b.points === a.points) {
+          const parseDisplayTime = (timeStr) => {
+            if (!timeStr) return Infinity;
+            return parseTimeStr(timeStr);
+          };
+          return parseDisplayTime(a.latestTimestamp) - parseDisplayTime(b.latestTimestamp);
+        }
+        return b.points - a.points;
+      });
+
+    setUsers(sortedUsers);
+  };
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "allowed_users"));
-        const leaderboardData = querySnapshot.docs.map((doc) => {
-          const userData = doc.data();
-          const timestamps = userData.timestamps || {};
-          
-          // Find the latest timestamp (highest question number)
-          let latestTimestamp = null;
-          if (timestamps) {
-            const questionIds = Object.keys(timestamps).map(Number).sort((a, b) => b - a);
-            if (questionIds.length > 0) {
-              latestTimestamp = timestamps[questionIds[0]];
-            }
-          }
-          
-          return {
-            email: doc.id,
-            name: userData.name || doc.id.split("@")[0],
-            points: userData.points || 0,
-            latestTimestamp: latestTimestamp,
-          };
-        });
-
-        const sortedUsers = leaderboardData.sort((a, b) => {
-          if (b.points === a.points) {
-            if (a.latestTimestamp && b.latestTimestamp) {
-              const parseTime = (timeStr) => {
-                if (!timeStr) return Infinity;
-                const [hours, minutes, seconds] = timeStr.split(":").map(Number);
-                return hours * 3600 + minutes * 60 + seconds;
-              };
-              
-              return parseTime(a.latestTimestamp) - parseTime(b.latestTimestamp);
-            }
-            
-            return a.latestTimestamp ? -1 : b.latestTimestamp ? 1 : 0;
-          }
-          return b.points - a.points;
-        });
-        
-        setUsers(sortedUsers);
+        processData(querySnapshot);
       } catch (error) {
         console.error("Error fetching leaderboard:", error);
       }
@@ -59,51 +87,11 @@ function Leaderboard() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "allowed_users"), (querySnapshot) => {
-      // console.log(querySnapshot)
-      // console.log(querySnapshot.docs)
-      // console.log(querySnapshot.docs[0])
-      const leaderboardData = querySnapshot.docs.map((doc) => {
-        const userData = doc.data();
-        const timestamps = userData.timestamps || {};
-        
-        let latestTimestamp = null;
-        if (timestamps) {
-          const questionIds = Object.keys(timestamps).map(Number).sort((a, b) => b - a);
-          if (questionIds.length > 0) {
-            latestTimestamp = timestamps[questionIds[0]];
-          }
-        }
-        
-        return {
-          email: doc.id,
-          name: userData.name || doc.id.split("@")[0],
-          points: userData.points || 0,
-          latestTimestamp: latestTimestamp,
-        };
-      });
-
-      const sortedUsers = leaderboardData.sort((a, b) => {
-        if (b.points === a.points) {
-          if (a.latestTimestamp && b.latestTimestamp) {
-            const parseTime = (timeStr) => {
-              if (!timeStr) return Infinity;
-              const [hours, minutes, seconds] = timeStr.split(":").map(Number);
-              return hours * 3600 + minutes * 60 + seconds;
-            };
-            
-            return parseTime(a.latestTimestamp) - parseTime(b.latestTimestamp);
-          }
-          return a.latestTimestamp ? -1 : b.latestTimestamp ? 1 : 0;
-        }
-        return b.points - a.points;
-      });
-      
-      setUsers(sortedUsers);
+      processData(querySnapshot);
     });
 
     return () => unsubscribe();
   }, []);
-
 
   return (
     <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
@@ -112,14 +100,21 @@ function Leaderboard() {
         {users.map((user, index) => (
           <li
             key={user.email}
-            className="flex justify-between bg-gray-700 px-4 py-2 rounded-lg"
+            className="flex justify-between items-center bg-gray-700 px-4 py-2 rounded-lg"
           >
-            <span className="text-white font-medium">
-              {index + 1}. {user.name}
-            </span>
-            {user.latestTimestamp && (
-                <span className="text-gray-400">Last: {user.latestTimestamp}</span>
+            <div className="flex items-center space-x-3">
+              <span className="text-white font-medium">
+                {index + 1}. {user.name}
+              </span>
+              {user.latestTimestamp && (
+                <span className={`text-gray-400 text-sm ${
+                  user.bonusTime > 0 ? 'text-yellow-400' : 
+                  user.bonusTime < 0 ? 'text-green-400' : ''
+                }`}>
+                  Last: {user.latestTimestamp}
+                </span>
               )}
+            </div>
             <div className="flex flex-col items-end">
               <span className="text-green-400 font-bold">{user.points} pts</span>
             </div>

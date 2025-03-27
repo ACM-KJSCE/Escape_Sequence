@@ -4,7 +4,7 @@ import QuestionArea from "../components/QuestionArea";
 import Timer from "../components/Timer";
 import Leaderboard from "../components/LeaderBoard";
 import { db } from "../firebase/config";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, collection, onSnapshot } from "firebase/firestore";
 
 function Dashboard() {
   const [activeQuestion, setActiveQuestion] = useState(1);
@@ -14,11 +14,13 @@ function Dashboard() {
   const [points, setPoints] = useState(0);
   const [isQuizActive, setIsQuizActive] = useState(false);
   const [timeUntilStart, setTimeUntilStart] = useState("");
+  const [bonusQuestionShown, setBonusQuestionShown] = useState(false);
+  const [bonusTime, setBonusTime] = useState(0);
 
   // Start time (24-hour format)
   const quizStartTime = {
-    hour: 21,
-    minute: 0,
+    hour: 2,
+    minute: 15,
     second: 0
   };
 
@@ -46,9 +48,9 @@ function Dashboard() {
         setIsQuizActive(true);
       } else {
         const diffMs = startTime - now;
-        const diffHrs = Math.floor((diffMs % 86400000) / 3600000);
-        const diffMins = Math.floor(((diffMs % 86400000) % 3600000) / 60000);
-        const diffSecs = Math.floor((((diffMs % 86400000) % 3600000) % 60000) / 1000);
+        const diffHrs = Math.floor((diffMs / (1000 * 60 * 60)) % 60);
+        const diffMins = Math.floor((diffMs /(1000 * 60)) % 60);
+        const diffSecs = Math.floor((diffMs / 1000) % 60);
         
         setTimeUntilStart(`${String(diffHrs).padStart(2, '0')}:${String(diffMins).padStart(2, '0')}:${String(diffSecs).padStart(2, '0')}`);
       }
@@ -64,8 +66,10 @@ function Dashboard() {
       const userDoc = await getDoc(userRef);
 
       if (userDoc.exists()) {
-        setPoints(userDoc.data().points || 0);
-        setCompletedQuestions(userDoc.data().completedQuestions || []);
+        const userData = userDoc.data();
+        setCompletedQuestions(userData.completedQuestions || []);
+        setBonusQuestionShown(userData.bonusQuestionShown || false);
+        setBonusTime(userData.bonusTime || 0);
       }
     };
 
@@ -88,7 +92,33 @@ function Dashboard() {
       setIsTimerRunning(false);
     }
   }, [timeRemaining, completedQuestions]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "allowed_users", userEmail), (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const userData = docSnapshot.data();
+        setPoints(userData.points || 0);
+        setBonusTime(userData.bonusTime || 0);
+        setBonusQuestionShown(userData.bonusQuestionShown || false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [userEmail]);
   
+  const handleBonusQuestionShown = async () => {
+    if (userEmail) {
+      try {
+        const userRef = doc(db, "allowed_users", userEmail);
+        await updateDoc(userRef, {
+          bonusQuestionShown: true
+        });
+        setBonusQuestionShown(true);
+      } catch (error) {
+        console.error("Error updating bonus question shown status:", error);
+      }
+    }
+  };
 
   const handleQuestionChange = (questionId) => {
     if (questionId === "leaderboard") {
@@ -146,7 +176,7 @@ function Dashboard() {
     
         <main className="flex-1 p-6 overflow-auto">
         {(activeQuestion === "leaderboard" || timeRemaining <= 0 || completedQuestions.length === questions.length) ? (
-            <Leaderboard />
+            <Leaderboard bonusTimeEnabled={true} />
         ) : !isQuizActive ? (
             <div className="flex flex-col items-center justify-center h-full">
             <div className="bg-gray-800 p-8 rounded-xl shadow-lg text-center">
@@ -170,9 +200,24 @@ function Dashboard() {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">{currentQuestion?.title}</h1>
                 <h1 className="text-2xl font-bold">Points: {points}</h1>
-                <Timer timeRemaining={timeRemaining} setTimeRemaining={setTimeRemaining} isRunning={isTimerRunning} startTime={quizStartEpoch} />
+                <Timer 
+                  timeRemaining={timeRemaining} 
+                  setTimeRemaining={setTimeRemaining} 
+                  isRunning={isTimerRunning} 
+                  startTime={quizStartEpoch}
+                  bonusTime={bonusTime}
+                />
             </div>
-            <QuestionArea question={currentQuestion} onSubmit={handleAnswerSubmit} userId={userEmail} startTime={quizStartEpoch} />
+            <QuestionArea 
+              question={currentQuestion} 
+              onSubmit={handleAnswerSubmit} 
+              userId={userEmail} 
+              startTime={quizStartEpoch} 
+              compq={completedQuestions} 
+              bonusShown={bonusQuestionShown}
+              onBonusShown={handleBonusQuestionShown}
+              bonusTime={bonusTime}
+            />
             </>
         )}
         </main>
