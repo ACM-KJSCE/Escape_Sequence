@@ -19,9 +19,16 @@ function SignIn() {
       if (!userDoc.exists()) {
         throw new Error("Access denied. Your email is not authorized.");
       }
-
+      const userData = userDoc.data();
+      const isAdmin = userData && userData.isAdmin === true;
+      
       localStorage.setItem("userEmail", email);
-      navigate("/dashboard");
+      
+      if (isAdmin) {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       setError(err.message);
     }

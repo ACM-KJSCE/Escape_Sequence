@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import DashBoard from "../pages/DashBoard.jsx";
 import SignIn from "../pages/SignIn.jsx";
 import AdminPanel from "../pages/AdminPanel.jsx";
-
+import ProtectedRoute from "./ProtectedRoute.jsx";
 
 const routes=createBrowserRouter([
     {
@@ -15,7 +15,7 @@ const routes=createBrowserRouter([
     },
     {
         path: '/admin',
-        element: <AdminPanel />
+        element: <ProtectedRoute><AdminPanel /></ProtectedRoute>
     }
 ])
 
