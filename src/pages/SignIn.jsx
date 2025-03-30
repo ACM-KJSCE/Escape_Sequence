@@ -3,79 +3,108 @@ import { db } from "../firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
-function SignIn() {
+const SignIn = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [outputLines, setOutputLines] = useState([
+    { text: "You need to authenticate to continue!", color: "text-gray-500" },
+    { text: "Please enter your teamId:", color: "text-sky-300" },
+  ]);
   const navigate = useNavigate();
 
-  const handleSignIn = async (e) => {
-    e.preventDefault();
-    setError("");
+  const handleKeyDown = async (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
 
-    try {
-      const userRef = doc(db, "allowed_users", email);
-      const userDoc = await getDoc(userRef);
+      if (!email.trim()) {
+        addOutputLine("Please enter a valid teamId!", "text-red-500");
+        return;
+      }
 
-      if (!userDoc.exists()) {
-        throw new Error("Access denied. Your email is not authorized.");
+      addOutputLine(`Authenticating: ${email}`, "text-amber-400");
+
+      try {
+        const userRef = doc(db, "allowed_users", email);
+        const userDoc = await getDoc(userRef);
+
+        if (!userDoc.exists()) {
+          throw new Error("Access denied. Your email is not authorized.");
+        }
+
+        const userData = userDoc.data();
+        const isAdmin = userData && userData.isAdmin === true;
+
+        localStorage.setItem("userEmail", email);
+
+        addOutputLine("Authentication successful!", "text-green-500");
+
+        setTimeout(() => {
+          if (isAdmin) {
+            navigate("/admin");
+          } else {
+            navigate("/dashboard");
+          }
+        }, 1000);
+      } catch (err) {
+        addOutputLine(err.message, "text-red-500");
+        setError(err.message);
       }
-      const userData = userDoc.data();
-      const isAdmin = userData && userData.isAdmin === true;
-      
-      localStorage.setItem("userEmail", email);
-      
-      if (isAdmin) {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      setError(err.message);
+
+      setEmail("");
     }
   };
 
+  const addOutputLine = (text, color) => {
+    setOutputLines((prev) => [...prev, { text, color }]);
+  };
+
   return (
-    <div className="flex h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
-          Welcome to New Event
-        </h2>
-      </div>
-
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSignIn}>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
-              Enter your teamId
-            </label>
-            <div className="mt-2">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          {error && <p className="text-red-500">{error}</p>}
-
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-            >
-              Sign in
-            </button>
-          </div>
-        </form>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div className="terminal p-5 rounded-lg font-mono">
+        <div className="terminal-header bg-zinc-700 text-white p-2 rounded-t-lg flex items-center">
+          <span className="text-red-500 text-5xl leading-[0px] align-middle -mt-2">
+            •
+          </span>
+          <span className="text-yellow-500 text-5xl leading-[0px] align-middle -mt-2 ml-1">
+            •
+          </span>
+          <span className="text-green-500 text-5xl leading-[0px] align-middle -mt-2 ml-1">
+            •
+          </span>
+          <span className="ml-4 align-baseline">
+            Do you have what it takes to Escape? -- bash -- zsh   
+          </span>
+        </div>
+        <div
+          className="pl-4 pt-2 bg-gray-900 max-h-[500px] overflow-auto"
+          id="output"
+          style={{ minHeight: "200px" }}
+        >
+          {outputLines.map((line, index) => (
+            <p key={index} className={line.color}>
+              {line.text}
+            </p>
+          ))}
+        </div>
+        <div
+          className="input flex pl-4 bg-gray-900 pb-4 rounded-b-lg items-center"
+          id="terminal-input-container"
+        >
+          <span className="text-green-500">➝</span>
+          <span className="text-sky-300 ml-2">~</span>
+          <input
+            className="bg-transparent border-none outline-none ring-0 focus:ring-0 text-amber-400 ml-2 w-full"
+            id="terminal-input"
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={handleKeyDown}
+            autoFocus
+          />
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default SignIn;

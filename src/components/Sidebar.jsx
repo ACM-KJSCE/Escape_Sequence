@@ -20,9 +20,9 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
   }
 
   return (
-    <aside className="w-64 bg-gray-800 p-4 flex flex-col">
+    <aside className="w-64 p-4 flex flex-col text-whtie mt-4 border-2 border-white m-2 rounded-xl h-[70vh] font-bold">
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-purple-400">Code Red</h2>
+        <h2 className="text-3xl font-extrabold text-white"><span className="text-red-600">Escape</span> Sequence</h2>
       </div>
 
       <nav className="flex-1">
@@ -43,10 +43,10 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
                 <button
                   onClick={() => onQuestionChange(item.id)}
                   disabled={!isAvailable || isCompleted}
-                  className={`w-full text-left px-4 py-2 rounded-lg transition-colors flex items-center justify-between
+                  className={`w-full text-left px-4 py-2 rounded-lg flex items-center justify-between border-2 border-black hover:scale-105 hover:bg-gray-50 transition-all duration-300
                     ${
                       activeQuestion === item.id
-                        ? "bg-purple-600 text-white"
+                        ? "bg-red-600 text-white"
                         : isAvailable ? isCompleted ? "cursor-not-allowed" : "text-white hover:bg-gray-700" : "text-gray-500"
                     }`}
                 >
@@ -73,7 +73,7 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
       <div className="mt-auto pt-4 border-t border-gray-700">
         <button
           onClick={onLogout}
-          className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+          className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg hover:scale-105 cursor-pointer transition-all duration-300 border-2 border-black"
         >
           Logout
         </button>

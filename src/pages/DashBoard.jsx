@@ -19,7 +19,7 @@ function Dashboard() {
 
   // Start time (24-hour format)
   const quizStartTime = {
-    hour: 2,
+    hour: 14,
     minute: 15,
     second: 0
   };
@@ -165,7 +165,7 @@ function Dashboard() {
   const currentQuestion = questions.find((q) => q.id === activeQuestion);
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white">
+    <div className="flex h-screen">
         <Sidebar
         activeQuestion={activeQuestion}
         completedQuestions={completedQuestions}
