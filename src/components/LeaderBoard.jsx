@@ -94,16 +94,16 @@ function Leaderboard() {
   }, []);
 
   return (
-    <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
-      <h2 className="text-2xl font-bold text-white mb-4">Leaderboard</h2>
+    <div className="rounded-xl p-6 shadow-lg border-2 border-white">
+      <h2 className="text-4xl font-bold mb-4 text-red-600">Leaderboard</h2>
       <ul className="space-y-3">
         {users.map((user, index) => (
           <li
             key={user.email}
-            className="flex justify-between items-center bg-gray-700 px-4 py-2 rounded-lg"
+            className="flex justify-between items-center px-4 py-2 rounded-lg text-white border text-xl"
           >
             <div className="flex items-center space-x-3">
-              <span className="text-white font-medium">
+              <span className="font-medium">
                 {index + 1}. {user.name}
               </span>
               {user.latestTimestamp && (

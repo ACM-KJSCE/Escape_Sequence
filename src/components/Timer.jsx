@@ -37,14 +37,14 @@ function Timer({ timeRemaining, setTimeRemaining, isRunning, startTime }) {
   const seconds = timeRemaining % 60;
   const formattedTime = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
-  let timerColor = "text-green-400";
+  let timerColor = "text-green-500";
   if (timeRemaining < 60) {
     timerColor = "text-red-400";
-  } else if (timeRemaining < 300) { // Less than 5 minutes
+  } else if (timeRemaining < 300) { 
     timerColor = "text-yellow-400";
   }
 
-  return <div className={`text-xl font-mono font-bold ${timerColor}`}>{formattedTime}</div>;
+  return <div className={`text-3xl font-mono font-bold bg-white p-2 rounded-xl ${timerColor}`}>{formattedTime}</div>;
 }
 
 export default Timer;

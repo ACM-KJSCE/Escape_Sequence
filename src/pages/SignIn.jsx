@@ -60,6 +60,12 @@ const SignIn = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
+      <div>
+        <img className="h-16" src="logo_withoutbg.png" alt="" />
+      </div>
+      <div>
+        <img className="h-24" src="esc.png" alt="" />
+      </div>
       <div className="terminal p-5 rounded-lg font-mono">
         <div className="terminal-header bg-zinc-700 text-white p-2 rounded-t-lg flex items-center">
           <span className="text-red-500 text-5xl leading-[0px] align-middle -mt-2">
@@ -72,7 +78,7 @@ const SignIn = () => {
             •
           </span>
           <span className="ml-4 align-baseline">
-            Do you have what it takes to Escape? -- bash -- zsh   
+            Do you have what it takes to Escape? -- bash -- zsh
           </span>
         </div>
         <div

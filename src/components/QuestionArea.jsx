@@ -160,7 +160,7 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
 
   return (
     <>
-      <div className={`bg-gray-800 rounded-xl p-6 shadow-lg transition-opacity duration-700 ${isFadingOut ? "opacity-0" : "opacity-100"}`}>
+      <div className={`text-white border-2 border-white rounded-xl p-6 shadow-lg transition-opacity duration-700 ${isFadingOut ? "opacity-0" : "opacity-100"}`}>
         <h2 className="text-xl font-medium mb-4">{question.content}</h2>
 
         <form onSubmit={handleSubmit}>
@@ -181,7 +181,7 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
                 type="submit"
                 disabled={!answer.trim()}
                 className={`px-4 py-2 rounded-lg ${
-                  answer.trim() ? "bg-purple-600 hover:bg-purple-700" : "bg-gray-600 cursor-not-allowed"
+                  answer.trim() ? "bg-green-600 hover:bg-green-700 hover:scale-105 transtion-all duration-300 cursor-pointer" : "bg-gray-600 cursor-not-allowed"
                 } transition-colors`}
               >
                 Submit Answer

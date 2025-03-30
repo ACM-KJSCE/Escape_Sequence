@@ -19,8 +19,8 @@ function Dashboard() {
 
   // Start time (24-hour format)
   const quizStartTime = {
-    hour: 14,
-    minute: 15,
+    hour: 15,
+    minute: 5,
     second: 0
   };
 
@@ -174,7 +174,7 @@ function Dashboard() {
         isQuizActive={isQuizActive}
         />
     
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-6 overflow-auto text-white">
         {(activeQuestion === "leaderboard" || timeRemaining <= 0 || completedQuestions.length === questions.length) ? (
             <Leaderboard bonusTimeEnabled={true} />
         ) : !isQuizActive ? (
