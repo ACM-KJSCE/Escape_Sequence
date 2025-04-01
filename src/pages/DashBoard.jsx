@@ -19,8 +19,8 @@ function Dashboard() {
 
   // Start time (24-hour format)
   const quizStartTime = {
-    hour: 15,
-    minute: 5,
+    hour: 23,
+    minute: 20,
     second: 0
   };
 
@@ -28,9 +28,45 @@ function Dashboard() {
   quizStartEpoch.setHours(quizStartTime.hour, quizStartTime.minute, quizStartTime.second);
 
   const questions = [
-    { id: 1, title: "Question 1", content: "X follows normal distribution with mean 33 and Standard deviation 3 then P(25<X< 30) is  (Input answered up to  four decimal place) ", correctAnswer: import.meta.env.VITE_APP_ANSWER_1_KEY },
-    { id: 2, title: "Question 2", content: "If X is uniformly distributed in (-2 <= x <= 2) Then  P (X < 1) = ", correctAnswer: import.meta.env.VITE_APP_ANSWER_2_KEY },
-    { id: 3, title: "Question 3", content: "What is 2 + 2?", correctAnswer: import.meta.env.VITE_APP_ANSWER_3_KEY },
+    // { id: 1, title: "Question 1", content: "X follows normal distribution with mean 33 and Standard deviation 3 then P(25<X< 30) is  (Input answered up to  four decimal place) ", correctAnswer: import.meta.env.VITE_APP_ANSWER_1_KEY },
+    // { id: 2, title: "Question 2", content: "If X is uniformly distributed in (-2 <= x <= 2) Then  P (X < 1) = ", correctAnswer: import.meta.env.VITE_APP_ANSWER_2_KEY },
+    // { id: 3, title: "Question 3", content: "What is 2 + 2?", correctAnswer: import.meta.env.VITE_APP_ANSWER_3_KEY },
+    { 
+      "id": 1, 
+      "title": "Question 1", 
+      "content": "What comes next in the sequence? 2, 6, 12, 20, 30, ?", 
+      "correctAnswer": import.meta.env.VITE_APP_ANSWER_1_KEY 
+  },
+  { 
+      "id": 2, 
+      "title": "Question 2", 
+      "content": "If CLOUD is written as DMPVE, how will RAIN be written?", 
+      "correctAnswer": import.meta.env.VITE_APP_ANSWER_2_KEY
+  },
+  { 
+      "id": 3, 
+      "title": "Question 3", 
+      "content": "Pointing to a girl, Rahul said, 'She is the only daughter of my father’s only son.' How is the girl related to Rahul?", 
+      "correctAnswer": import.meta.env.VITE_APP_ANSWER_3_KEY
+  },
+  { 
+      "id": 4, 
+      "title": "Question 4", 
+      "content": "A clock shows the time as 4:15 PM. If the minute hand moves 90 degrees clockwise, what will be the new time?", 
+      "correctAnswer": import.meta.env.VITE_APP_ANSWER_4_KEY
+  },
+  { 
+      "id": 5, 
+      "title": "Question 5", 
+      "content": "Statements: 1. Some engineers are mathematicians. 2. All mathematicians are scientists. Conclusions: I. Some engineers are scientists. II. All scientists are engineers. Which conclusion follows?", 
+      "correctAnswer": import.meta.env.VITE_APP_ANSWER_5_KEY
+  },
+  { 
+      "id": 6, 
+      "title": "Question 6", 
+      "content": "A father is 4 times as old as his son. After 8 years, he will be twice as old as his son. What is the father's current age?", 
+      "correctAnswer": import.meta.env.VITE_APP_ANSWER_6_KEY 
+  }
   ];
 
   const userEmail = localStorage.getItem("userEmail");

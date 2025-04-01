@@ -34,10 +34,10 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
       const currentTime = new Date();
       const elapsedTime = currentTime - startTime;
       
-      if (elapsedTime >= 3 * 60 * 1000 && elapsedTime < 12 * 60 * 1000 && compq.length >= 2 && !bonusQuestionAttempted) {
+      if (elapsedTime >= 12 * 60 * 1000 && elapsedTime < 14 * 60 * 1000 && compq.length >= 2 && !bonusQuestionAttempted) {
         const mockBonusQuestion = {
-          content: "What is my Pointer?",
-          correctAnswer: "9.75"
+          content: "Does tech team work",
+          correctAnswer: import.meta.env.VITE_APP_BONUS_ANSWER_KEY
         };
         setBonusQuestion(mockBonusQuestion);
         setShowBonusQuestionPrompt(true);
