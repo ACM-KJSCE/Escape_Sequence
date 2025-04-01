@@ -44,11 +44,14 @@ function Leaderboard() {
         name: userData.name || doc.id.split("@")[0],
         points: userData.points || 0,
         originalTimestamp: latestTimestamp,
-        bonusTime: userData.bonusTime || 0
+        bonusTime: userData.bonusTime || 0,
+        isAdmin: userData.isAdmin || false
       };
     });
 
-    const sortedUsers = leaderboardData
+    const filteredUsers = leaderboardData.filter(user => !user.isAdmin);
+
+    const sortedUsers = filteredUsers
       .map(user => {
         let adjustedTimestamp = user.originalTimestamp;
         if (user.originalTimestamp && user.bonusTime !== 0) {
