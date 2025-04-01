@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 
 function Timer({ timeRemaining, setTimeRemaining, isRunning, startTime }) {
-  const CONTEST_DURATION = 2700;
+  const CONTEST_DURATION = 600;
   
   useEffect(() => {
     if (startTime) {
