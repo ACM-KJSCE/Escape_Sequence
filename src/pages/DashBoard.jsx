@@ -19,8 +19,8 @@ function Dashboard() {
 
   // Start time (24-hour format)
   const quizStartTime = {
-    hour: 23,
-    minute: 28,
+    hour: 0,
+    minute: 7,
     second: 0
   };
 
@@ -28,9 +28,6 @@ function Dashboard() {
   quizStartEpoch.setHours(quizStartTime.hour, quizStartTime.minute, quizStartTime.second);
 
   const questions = [
-    // { id: 1, title: "Question 1", content: "X follows normal distribution with mean 33 and Standard deviation 3 then P(25<X< 30) is  (Input answered up to  four decimal place) ", correctAnswer: import.meta.env.VITE_APP_ANSWER_1_KEY },
-    // { id: 2, title: "Question 2", content: "If X is uniformly distributed in (-2 <= x <= 2) Then  P (X < 1) = ", correctAnswer: import.meta.env.VITE_APP_ANSWER_2_KEY },
-    // { id: 3, title: "Question 3", content: "What is 2 + 2?", correctAnswer: import.meta.env.VITE_APP_ANSWER_3_KEY },
     { 
       "id": 1, 
       "title": "Question 1", 
@@ -246,13 +243,6 @@ function Dashboard() {
                 </p>
                 <div className="text-4xl font-mono mb-8 text-purple-400">{timeUntilStart}</div>
                 <p className="text-gray-400">Please wait until the scheduled time to begin the quiz.</p>
-                <p className="mt-4 text-purple-300">
-                You can view the <button 
-                    onClick={() => setActiveQuestion("leaderboard")} 
-                    className="underline hover:text-purple-400">
-                    leaderboard
-                </button> while you wait.
-                </p>
             </div>
             </div>
         ) : (

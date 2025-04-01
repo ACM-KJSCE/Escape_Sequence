@@ -12,7 +12,7 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
   ]
   
   const isQuestionAvailable = (questionId) => {
-    if (questionId === "leaderboard") return true
+    if (questionId === "leaderboard") return isQuizActive
     if (!isQuizActive) return false
     if (questionId === 1) return true
     return completedQuestions.includes(questionId - 1)
@@ -23,7 +23,7 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
   }
 
   return (
-    <aside className="w-64 p-4 flex flex-col text-whtie mt-4 border-2 border-white m-2 rounded-xl h-[70vh] font-bold">
+    <aside className="w-64 p-4 flex flex-col text-whtie mt-4 border-2 border-white m-2 rounded-xl h-flex font-bold">
       <div className="mb-8">
         <h2 className="text-3xl font-extrabold text-white"><span className="text-red-600">Escape</span> Sequence</h2>
       </div>
@@ -46,12 +46,17 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
                 <button
                   onClick={() => onQuestionChange(item.id)}
                   disabled={!isAvailable || isCompleted}
-                  className={`w-full text-left px-4 py-2 rounded-lg flex items-center justify-between border-2 border-black hover:scale-105 hover:bg-gray-50 transition-all duration-300
+                  className={`w-full text-left px-4 py-2 rounded-lg flex items-center justify-between border-2 border-black transition-all duration-300
                     ${
                       activeQuestion === item.id
                         ? "bg-red-600 text-white"
-                        : isAvailable ? isCompleted ? "cursor-not-allowed" : "text-white hover:bg-gray-700" : "text-gray-500"
-                    }`}
+                        : isAvailable 
+                          ? isCompleted 
+                            ? "cursor-not-allowed" 
+                            : "text-white hover:bg-gray-700 hover:text-white" 
+                          : "text-gray-500"
+                    }
+                    ${isAvailable && !isCompleted ? "hover:scale-105" : ""}`}
                 >
                   <span>{item.label}</span>
 
@@ -76,7 +81,7 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
       <div className="mt-auto pt-4 border-t border-gray-700">
         <button
           onClick={onLogout}
-          className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg hover:scale-105 cursor-pointer transition-all duration-300 border-2 border-black"
+          className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all duration-300 border-2 border-black"
         >
           Logout
         </button>
