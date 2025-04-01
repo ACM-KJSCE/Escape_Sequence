@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/config";
+import Hints from "./Hints";
 
 
 function parseTimeStr(timeStr) {
@@ -97,6 +98,7 @@ function Leaderboard() {
   }, []);
 
   return (
+    <>
     <div className="rounded-xl p-6 shadow-lg border-2 border-white">
       <h2 className="text-4xl font-bold mb-4 text-red-600">Leaderboard</h2>
       <ul className="space-y-3">
@@ -125,6 +127,8 @@ function Leaderboard() {
         ))}
       </ul>
     </div>
+    <Hints />
+    </>
   );
 }
 
