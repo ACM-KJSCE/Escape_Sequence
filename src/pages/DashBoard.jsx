@@ -190,6 +190,30 @@ function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    const k = async () => {
+      try {
+        const completedQuestionsRef =await getDoc(
+          doc(db, "allowed_users", userEmail)
+        );
+        const currentUserQuestions = completedQuestionsRef.data().completedQuestions.length || 0;
+        
+        // console.log(isQuizActive)
+
+        if(isQuizActive)
+          setActiveQuestion(currentUserQuestions+1);
+
+
+
+        console.log("Current User Questions:", currentUserQuestions);
+      } catch (error) {
+        console.error("Error fetching completed questions:", error);
+      }
+    };
+    k();
+  }, [isQuizActive]);
+
+
   const handleLogout = () => {
     localStorage.removeItem("userEmail");
     window.location.href = "/";
