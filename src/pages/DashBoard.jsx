@@ -5,6 +5,7 @@ import Timer from "../components/Timer";
 import Leaderboard from "../components/LeaderBoard";
 import { db } from "../firebase/config";
 import { doc, getDoc, updateDoc, collection, onSnapshot } from "firebase/firestore";
+import Hints from "../components/Hints";
 
 function Dashboard() {
   const [activeQuestion, setActiveQuestion] = useState(1);
@@ -16,6 +17,7 @@ function Dashboard() {
   const [timeUntilStart, setTimeUntilStart] = useState("");
   const [bonusQuestionShown, setBonusQuestionShown] = useState(false);
   const [bonusTime, setBonusTime] = useState(0);
+  const [HintsOn, setHintsOn] = useState(false);
 
   // Start time (24-hour format)
   const quizStartTime = {
@@ -229,6 +231,7 @@ function Dashboard() {
         onQuestionChange={handleQuestionChange}
         onLogout={handleLogout}
         isQuizActive={isQuizActive}
+        setHintsOn={setHintsOn}
         />
     
         <main className="flex-1 p-6 overflow-auto text-white">
@@ -270,6 +273,7 @@ function Dashboard() {
             />
             </>
         )}
+        <Hints HintsOn={HintsOn} setHintsOn={setHintsOn}/>
         </main>
     </div>      
   );

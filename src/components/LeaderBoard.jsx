@@ -127,7 +127,6 @@ function Leaderboard() {
         ))}
       </ul>
     </div>
-    <Hints />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { CheckCircle, Lock, Clock } from "lucide-react"
 
-function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogout, isQuizActive }) {
+function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogout, isQuizActive, setHintsOn }) {
   const menuItems = [
     { id: 1, label: "Q1" },
     { id: 2, label: "Q2" },
@@ -52,13 +52,13 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
                         ? "bg-red-600 text-white"
                         : isAvailable 
                           ? isCompleted 
-                            ? "cursor-not-allowed" 
+                            ? "cursor-not-allowed bg-gray-600" 
                             : "text-white hover:bg-gray-700 hover:text-white" 
-                          : "text-gray-500"
+                          : "text-gray-500 bg-gray-800"
                     }
                     ${isAvailable && !isCompleted ? "hover:scale-105" : ""}`}
                 >
-                  <span>{item.label}</span>
+                  <span className="text-gray-100">{item.label}</span>
 
                   {item.id !== "leaderboard" && (
                     <span className="ml-2">
@@ -75,8 +75,15 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
               </li>
             )
           })}
+          <li>
+            <button className="w-full text-left px-4 py-2 rounded-lg flex items-center justify-between border-2 border-black transition-all duration-300 text-white hover:bg-gray-700" onClick={() => setHintsOn(true)}>
+              Hints
+            </button>
+          </li>
         </ul>
+
       </nav>
+      
 
       <div className="mt-auto pt-4 border-t border-gray-700">
         <button
