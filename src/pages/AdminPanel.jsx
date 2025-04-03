@@ -38,7 +38,8 @@ function AdminDashboard() {
         answer3: "",
         points: 0,
         completedQuestions: [],
-        timestamps: {}
+        timestamps: {},
+        tabSwitchCount: 0
       }, { merge: true });
       alert("User Created Successfully!");
       setNewUserEmail("");
@@ -61,7 +62,7 @@ function AdminDashboard() {
     }
   };
 
-  // Update a user’s points using updateDoc
+  // Update a user's points using updateDoc
   const handleUpdateUser = async () => {
     if (!selectedUser) return alert("Select a user to update!");
     try {
@@ -76,16 +77,33 @@ function AdminDashboard() {
     }
   };
 
-  // Reset a user’s progress (without overwriting other fields)
+  // Reset a user's progress (without overwriting other fields)
   const handleResetUser = async (userId) => {
     if (!window.confirm(`Reset ${userId}'s progress?`)) return;
     try {
       const userRef = doc(db, "allowed_users", userId);
-      await updateDoc(userRef, { points: 0, completedQuestions: [], timestamps: {} });
+      await updateDoc(userRef, { 
+        points: 0, 
+        completedQuestions: [], 
+        timestamps: {},
+        tabSwitchCount: 0
+      });
       alert("User Progress Reset!");
       fetchUsers();
     } catch (error) {
       console.error("Error resetting user:", error);
+    }
+  };
+
+  // Reset tab switch count only
+  const handleResetTabSwitches = async (userId) => {
+    try {
+      const userRef = doc(db, "allowed_users", userId);
+      await updateDoc(userRef, { tabSwitchCount: 0 });
+      alert("Tab switch count reset!");
+      fetchUsers();
+    } catch (error) {
+      console.error("Error resetting tab switches:", error);
     }
   };
 
@@ -149,27 +167,42 @@ function AdminDashboard() {
         )}
       </div>
 
-      {/* User List */}
+      {/* User List with Tab Switch Count */}
       <h3 className="text-xl mb-2">Manage Users</h3>
       <ul className="space-y-2">
         {users.map((user) => (
-          <li key={user.id} className="flex justify-between bg-gray-800 px-4 py-2 rounded">
-            <span>
-              {user.name} ({user.id}) - <strong>{user.points} pts</strong>
-            </span>
-            <div>
-              <button
-                onClick={() => handleResetUser(user.id)}
-                className="bg-yellow-500 px-2 py-1 rounded mr-2 hover:bg-yellow-600"
-              >
-                Reset
-              </button>
-              <button
-                onClick={() => handleDeleteUser(user.id)}
-                className="bg-red-600 px-2 py-1 rounded hover:bg-red-700"
-              >
-                Delete
-              </button>
+          <li key={user.id} className="bg-gray-800 px-4 py-2 rounded">
+            <div className="flex justify-between items-center mb-1">
+              <span>
+                {user.name} ({user.id}) - <strong>{user.points} pts</strong>
+              </span>
+              <div>
+                <button
+                  onClick={() => handleResetUser(user.id)}
+                  className="bg-yellow-500 px-2 py-1 rounded mr-2 hover:bg-yellow-600"
+                >
+                  Reset
+                </button>
+                <button
+                  onClick={() => handleDeleteUser(user.id)}
+                  className="bg-red-600 px-2 py-1 rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className={`${user.tabSwitchCount > 0 ? 'text-yellow-400' : 'text-gray-400'}`}>
+                Tab switches: <strong>{user.tabSwitchCount || 0}</strong>
+              </span>
+              {user.tabSwitchCount > 0 && (
+                <button
+                  onClick={() => handleResetTabSwitches(user.id)}
+                  className="bg-indigo-600 px-2 py-1 text-xs rounded hover:bg-indigo-700"
+                >
+                  Reset Tab Switches
+                </button>
+              )}
             </div>
           </li>
         ))}

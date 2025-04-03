@@ -4,8 +4,9 @@ import QuestionArea from "../components/QuestionArea";
 import Timer from "../components/Timer";
 import Leaderboard from "../components/LeaderBoard";
 import { db } from "../firebase/config";
-import { doc, getDoc, updateDoc, collection, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import Hints from "../components/Hints";
+import QuizRestrictions from "../components/QuizRestrictions";
 
 function Dashboard() {
   const [activeQuestion, setActiveQuestion] = useState(1);
@@ -18,11 +19,12 @@ function Dashboard() {
   const [bonusQuestionShown, setBonusQuestionShown] = useState(false);
   const [bonusTime, setBonusTime] = useState(0);
   const [HintsOn, setHintsOn] = useState(false);
+  const [warnings, setWarnings] = useState([]);
 
   // Start time (24-hour format)
   const quizStartTime = {
-    hour: 0,
-    minute: 7,
+    hour: 14,
+    minute: 28,
     second: 0
   };
 
@@ -81,6 +83,10 @@ function Dashboard() {
       
       if (now >= startTime) {
         setIsQuizActive(true);
+        // Set the quiz active indicators for QuizRestrictions component
+        window.isContestActive = true;
+        document.body.classList.add('quiz-active');
+        sessionStorage.setItem('quizActive', 'true');
       } else {
         const diffMs = startTime - now;
         const diffHrs = Math.floor((diffMs / (1000 * 60 * 60)) % 60);
@@ -114,12 +120,12 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (activeQuestion !== "leaderboard" && isQuizActive) {
+    if (isQuizActive && timeRemaining > 0 && completedQuestions.length < questions.length) {
       setIsTimerRunning(true);
-    } else {
+    } else if (!isQuizActive || timeRemaining <= 0 || completedQuestions.length === questions.length) {
       setIsTimerRunning(false);
     }
-  }, [activeQuestion, isQuizActive]);
+  }, [activeQuestion, isQuizActive, timeRemaining, completedQuestions, questions.length]);
 
   useEffect(() => {
     if (timeRemaining <= 0 || completedQuestions.length === questions.length) {
@@ -140,7 +146,7 @@ function Dashboard() {
 
     return () => unsubscribe();
   }, [userEmail]);
-  
+
   const handleBonusQuestionShown = async () => {
     if (userEmail) {
       try {
@@ -200,8 +206,6 @@ function Dashboard() {
         );
         const currentUserQuestions = completedQuestionsRef.data().completedQuestions.length || 0;
         
-        // console.log(isQuizActive)
-
         if(isQuizActive)
           setActiveQuestion(currentUserQuestions+1);
 
@@ -221,61 +225,102 @@ function Dashboard() {
     window.location.href = "/";
   };
 
+  const handleViolation = (violation) => {
+    // Add warning
+    const warning = {
+      id: Date.now(),
+      message: `Warning: ${violation.reason}`,
+    };
+    
+    setWarnings(prev => [...prev, warning]);
+    
+    // Auto-remove warning after 5 seconds
+    setTimeout(() => {
+      setWarnings(prev => prev.filter(w => w.id !== warning.id));
+    }, 5000);
+    
+    // Display special warning for tab switch violations
+    if (violation.isTabSwitch) {
+      const tabSwitchWarning = {
+        id: Date.now() + 1,
+        message: `Tab switch detected (${violation.count} total)`,
+      };
+      setWarnings(prev => [...prev, tabSwitchWarning]);
+    }
+  };
+
   const currentQuestion = questions.find((q) => q.id === activeQuestion);
 
   return (
-    <div className="flex h-screen">
+    <QuizRestrictions onViolation={handleViolation}>
+      <div className="flex h-screen">
         <Sidebar
-        activeQuestion={activeQuestion}
-        completedQuestions={completedQuestions}
-        onQuestionChange={handleQuestionChange}
-        onLogout={handleLogout}
-        isQuizActive={isQuizActive}
-        setHintsOn={setHintsOn}
+          activeQuestion={activeQuestion}
+          completedQuestions={completedQuestions}
+          onQuestionChange={handleQuestionChange}
+          onLogout={handleLogout}
+          isQuizActive={isQuizActive}
+          setHintsOn={setHintsOn}
         />
-    
+      
         <main className="flex-1 p-6 overflow-auto text-white">
-        {(activeQuestion === "leaderboard" || timeRemaining <= 0 || completedQuestions.length === questions.length) ? (
-            <Leaderboard bonusTimeEnabled={true} />
-        ) : !isQuizActive ? (
-            <div className="flex flex-col items-center justify-center h-full">
-            <div className="bg-gray-800 p-8 rounded-xl shadow-lg text-center">
-                <h1 className="text-3xl font-bold mb-6">Quiz Not Started Yet</h1>
-                <p className="text-xl mb-6">
-                The quiz will start at {quizStartTime.hour}:{String(quizStartTime.minute).padStart(2, '0')}
-                </p>
-                <div className="text-4xl font-mono mb-8 text-purple-400">{timeUntilStart}</div>
-                <p className="text-gray-400">Please wait until the scheduled time to begin the quiz.</p>
-            </div>
-            </div>
-        ) : (
-            <>
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">{currentQuestion?.title}</h1>
-                <h1 className="text-2xl font-bold">Points: {points}</h1>
-                <Timer 
-                  timeRemaining={timeRemaining} 
-                  setTimeRemaining={setTimeRemaining} 
-                  isRunning={isTimerRunning} 
-                  startTime={quizStartEpoch}
-                  bonusTime={bonusTime}
-                />
-            </div>
-            <QuestionArea 
-              question={currentQuestion} 
-              onSubmit={handleAnswerSubmit} 
-              userId={userEmail} 
-              startTime={quizStartEpoch} 
-              compq={completedQuestions} 
-              bonusShown={bonusQuestionShown}
-              onBonusShown={handleBonusQuestionShown}
-              bonusTime={bonusTime}
-            />
-            </>
-        )}
-        <Hints HintsOn={HintsOn} setHintsOn={setHintsOn}/>
+          {/* Warning toasts */}
+          <div className="fixed top-4 right-4 z-50">
+            {warnings.map(warning => (
+              <div key={warning.id} className="bg-red-500 text-white px-4 py-2 rounded mb-2 shadow-lg">
+                {warning.message}
+              </div>
+            ))}
+          </div>
+          
+          {(activeQuestion === "leaderboard" || timeRemaining <= 0 || completedQuestions.length === questions.length) ? (
+              <Leaderboard 
+                timeRemaining={timeRemaining}
+                setTimeRemaining={setTimeRemaining}
+                isTimerRunning={isTimerRunning}
+                startTime={quizStartEpoch}
+                bonusTime={bonusTime}
+              />
+          ) : !isQuizActive ? (
+              <div className="flex flex-col items-center justify-center h-full">
+              <div className="bg-gray-800 p-8 rounded-xl shadow-lg text-center">
+                  <h1 className="text-3xl font-bold mb-6">Quiz Not Started Yet</h1>
+                  <p className="text-xl mb-6">
+                  The quiz will start at {quizStartTime.hour}:{String(quizStartTime.minute).padStart(2, '0')}
+                  </p>
+                  <div className="text-4xl font-mono mb-8 text-purple-400">{timeUntilStart}</div>
+                  <p className="text-gray-400">Please wait until the scheduled time to begin the quiz.</p>
+              </div>
+              </div>
+          ) : (
+              <>
+              <div className="flex justify-between items-center mb-6">
+                  <h1 className="text-2xl font-bold">{currentQuestion?.title}</h1>
+                  <h1 className="text-2xl font-bold">Points: {points}</h1>
+                  <Timer 
+                    timeRemaining={timeRemaining} 
+                    setTimeRemaining={setTimeRemaining} 
+                    isRunning={isTimerRunning} 
+                    startTime={quizStartEpoch}
+                    bonusTime={bonusTime}
+                  />
+              </div>
+              <QuestionArea 
+                question={currentQuestion} 
+                onSubmit={handleAnswerSubmit} 
+                userId={userEmail} 
+                startTime={quizStartEpoch} 
+                compq={completedQuestions} 
+                bonusShown={bonusQuestionShown}
+                onBonusShown={handleBonusQuestionShown}
+                bonusTime={bonusTime}
+              />
+              </>
+          )}
+          <Hints HintsOn={HintsOn} setHintsOn={setHintsOn}/>
         </main>
-    </div>      
+      </div>
+    </QuizRestrictions>
   );
 }
 

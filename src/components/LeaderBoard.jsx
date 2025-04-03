@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/config";
 import Hints from "./Hints";
-
+import Timer from "./Timer";
 
 function parseTimeStr(timeStr) {
   const parts = timeStr.split(":").map(Number);
@@ -22,7 +22,7 @@ function formatTime(totalSeconds) {
   return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
-function Leaderboard() {
+function Leaderboard({ timeRemaining, setTimeRemaining, isTimerRunning, startTime, bonusTime }) {
   const [users, setUsers] = useState([]);
 
   const processData = (querySnapshot) => {
@@ -100,7 +100,18 @@ function Leaderboard() {
   return (
     <>
     <div className="rounded-xl p-6 shadow-lg border-2 border-white">
-      <h2 className="text-4xl font-bold mb-4 text-red-600">Leaderboard</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-4xl font-bold text-red-600">Leaderboard</h2>
+        {timeRemaining !== undefined && (
+          <Timer 
+            timeRemaining={timeRemaining} 
+            setTimeRemaining={setTimeRemaining} 
+            isRunning={isTimerRunning} 
+            startTime={startTime}
+            bonusTime={bonusTime}
+          />
+        )}
+      </div>
       <ul className="space-y-3">
         {users.map((user, index) => (
           <li
