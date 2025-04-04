@@ -24,6 +24,7 @@ function formatTime(totalSeconds) {
 
 function Leaderboard({ timeRemaining, setTimeRemaining, isTimerRunning, startTime, bonusTime }) {
   const [users, setUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const processData = (querySnapshot) => {
     const leaderboardData = querySnapshot.docs.map((doc) => {
@@ -73,6 +74,7 @@ function Leaderboard({ timeRemaining, setTimeRemaining, isTimerRunning, startTim
         return b.points - a.points;
       });
 
+      // console.log(users)
     setUsers(sortedUsers);
   };
 
@@ -86,7 +88,15 @@ function Leaderboard({ timeRemaining, setTimeRemaining, isTimerRunning, startTim
       }
     };
 
+    const getCurrentUser = () => {
+      const userEmail = localStorage.getItem("userEmail");
+      if (userEmail) {
+        setCurrentUser(userEmail);
+      }
+    }
+
     fetchLeaderboard();
+    getCurrentUser();
   }, []);
 
   useEffect(() => {
@@ -122,6 +132,9 @@ function Leaderboard({ timeRemaining, setTimeRemaining, isTimerRunning, startTim
               <span className="font-medium">
                 {index + 1}. {user.name}
               </span>
+              {user.email === currentUser && (
+                <span className="text-yellow-400 font-bold"> (You)</span>
+              )}
               {user.latestTimestamp && (
                 <span className={`text-gray-400 text-sm ${
                   user.bonusTime > 0 ? 'text-yellow-400' : 

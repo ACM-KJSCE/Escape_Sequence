@@ -21,10 +21,10 @@ function Dashboard() {
   const [HintsOn, setHintsOn] = useState(false);
   const [warnings, setWarnings] = useState([]);
 
-  // Start time (24-hour format)
+  
   const quizStartTime = {
-    hour: 14,
-    minute: 28,
+    hour:17,
+    minute: 0,
     second: 0
   };
 
@@ -36,6 +36,7 @@ function Dashboard() {
       "id": 1, 
       "title": "Question 1", 
       "content": "What comes next in the sequence? 2, 6, 12, 20, 30, ?", 
+      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/ES_1.png?alt=media&token=8c6d1c0a-0a4d-49e3-bdae-2965d0f3af0f",
       "correctAnswer": import.meta.env.VITE_APP_ANSWER_1_KEY 
   },
   { 
@@ -171,7 +172,7 @@ function Dashboard() {
 
     if (
       completedQuestions.includes(questionId) ||
-      questionId === 1 ||
+      questionId === 1 || 
       (typeof questionId === "number" && completedQuestions.includes(questionId - 1))
     ) {
       setActiveQuestion(questionId);
@@ -246,6 +247,11 @@ function Dashboard() {
         message: `Tab switch detected (${violation.count} total)`,
       };
       setWarnings(prev => [...prev, tabSwitchWarning]);
+
+      setTimeout(() => {
+        setWarnings(prev => prev.filter(w => w.id !== tabSwitchWarning.id));
+      }
+      , 5000);
     }
   };
 

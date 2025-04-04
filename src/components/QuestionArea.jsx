@@ -163,6 +163,10 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
       <div className={`text-white border-2 border-white rounded-xl p-6 shadow-lg transition-opacity duration-700 ${isFadingOut ? "opacity-0" : "opacity-100"}`}>
         <h2 className="text-xl font-medium mb-4">{question.content}</h2>
 
+        {question.imageUrl && (
+          <img src={question.imageUrl} alt="Question" className="mb-4 rounded-lg shadow-lg" />
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
             <input
