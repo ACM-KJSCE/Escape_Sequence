@@ -43,7 +43,7 @@ function BonusQuestion({ question, onClose, onSubmit, onTimeUp }) {
         </div>
         
         <div className="mb-6">
-          <h3 className="text-sm text-gray-300 mb-1">Reward: +2 minutes | Penalty: -2 minutes</h3>
+          <h3 className="text-sm text-gray-300 mb-1">Reward: -2 minutes | Penalty: +2 minutes</h3>
           <form onSubmit={handleSubmit}>
             <input
               type="text"
