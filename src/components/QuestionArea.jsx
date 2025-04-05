@@ -40,7 +40,8 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
       if (elapsedTime >= 30 * 60 * 1000 && elapsedTime < 35 * 60 * 1000  && !bonusQuestionAttempted) {
         const mockBonusQuestion = {
           content: "Does tech team work",
-          correctAnswer: import.meta.env.VITE_APP_BONUS_ANSWER_KEY
+          correctAnswer: import.meta.env.VITE_APP_BONUS_ANSWER_KEY,
+          hint:""
         };
         setBonusQuestion(mockBonusQuestion)
         setShowBonusQuestionPrompt(true);
@@ -168,7 +169,7 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
         <h2 className="text-xl font-medium mb-4">{question.content}</h2>
 
         {question.imageUrl && (
-          <img src={question.imageUrl} alt="Question" className="mb-4 rounded-lg shadow-lg" />
+          <img src={question.imageUrl} alt="Question" className="mb-4 rounded-lg shadow-lg max-w-[600px]" />
         )}
 
         <form onSubmit={handleSubmit}>

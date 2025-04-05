@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import hints from './../configs/hints';
 
 function Hints({
   HintsOn,
@@ -30,24 +31,12 @@ function Hints({
         <h2 className='text-2xl font-bold mb-4 text-white'>Hints</h2>
         
         <div className='flex flex-col gap-4 overflow-y-auto max-h-[calc(80vh-120px)] pr-2'>
-          <div className='bg-gray-800 p-4 rounded-lg shadow-md'>
-            <p className='text-white'>Bruh</p>
-          </div>
-          <div className='bg-gray-800 p-4 rounded-lg shadow-md'>
-            <p className='text-white'>Bruh</p>
-          </div>
-          <div className='bg-gray-800 p-4 rounded-lg shadow-md'>
-            <p className='text-white'>Bruh</p>
-          </div>
-          <div className='bg-gray-800 p-4 rounded-lg shadow-md'>
-            <p className='text-white'>Bruh</p>
-          </div>
-          <div className='bg-gray-800 p-4 rounded-lg shadow-md'>
-            <p className='text-white'>Bruh</p>
-          </div>
-          <div className='bg-gray-800 p-4 rounded-lg shadow-md'>
-            <p className='text-white'>Bruh</p>
-          </div>
+         {hints.map((hint, index) => (
+            <div key={index} className='bg-gray-800 p-4 rounded-lg shadow-md'>
+              {hint.text!==""&&<h3 className='text-lg font-semibold text-white mb-5'>{hint.text}</h3>}
+             {hint.url && <img src={hint.url} alt="hint" className=' max-w-[300px]'/>}
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -32,16 +32,20 @@ function BonusQuestion({ question, onClose, onSubmit, onTimeUp,handleBonusQuesti
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-      <div className="bg-gray-800 w-full max-w-md p-6 rounded-xl shadow-2xl border-2 border-purple-500 animate-bounce-in">
+      <div className="bg-gray-800 w-full max-w-2xl p-6 rounded-xl shadow-2xl border-2 border-purple-500 animate-bounce-in">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-purple-400">⭐ BONUS QUESTION ⭐</h2>
+          <h2 className="text-xl font-bold text-purple-400">⭐ Choo-Choo Cipher (BonusQuestion) ⭐</h2>
           <div className="text-xl font-mono font-bold text-red-400">
             {remainingTime.toString().padStart(2, '0')} seconds
           </div>
         </div>
         
         <div className="mb-6 bg-gray-700 p-4 rounded-lg">
-          <p className="text-white">{question?.content || "Bonus question content"}</p>
+          {/* <p className="text-white">{question?.content || "Bonus question content"}</p> */}
+         
+          <img src="https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/Bonus%20(1).png?alt=media&token=b8753282-7c8b-4e77-9802-145421f951f7" alt="Bonus" className='' />
+          <img src="https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/Bonus%20(2).png?alt=media&token=271d9acf-d980-4bff-9beb-c08ee2e235a5" alt="hint" />
+          
         </div>
         
         <div className="mb-6">
