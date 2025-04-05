@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
-function BonusQuestion({ question, onClose, onSubmit, onTimeUp }) {
+function BonusQuestion({ question, onClose, onSubmit, onTimeUp,handleBonusQuestionContinue, handleBonusQuestionSkip,setShowBonusQuestion,showBonusQuestion }) {
   const [answer, setAnswer] = useState("");
-  const [remainingTime, setRemainingTime] = useState(120);
+  const [remainingTime, setRemainingTime] = useState(300);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -28,13 +28,15 @@ function BonusQuestion({ question, onClose, onSubmit, onTimeUp }) {
     onSubmit(answer);
   };
 
+
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
       <div className="bg-gray-800 w-full max-w-md p-6 rounded-xl shadow-2xl border-2 border-purple-500 animate-bounce-in">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-purple-400">⭐ BONUS QUESTION ⭐</h2>
           <div className="text-xl font-mono font-bold text-red-400">
-            00:{remainingTime.toString().padStart(2, '0')}
+            {remainingTime.toString().padStart(2, '0')} seconds
           </div>
         </div>
         
@@ -55,7 +57,7 @@ function BonusQuestion({ question, onClose, onSubmit, onTimeUp }) {
             />
             
             <div className="flex space-x-2">
-              <button
+              {showBonusQuestion && <button
                 type="submit"
                 disabled={!answer.trim() || isSubmitting}
                 className={`flex-1 px-4 py-2 rounded-lg ${
@@ -63,7 +65,29 @@ function BonusQuestion({ question, onClose, onSubmit, onTimeUp }) {
                 } transition-colors`}
               >
                 Submit
+              </button>}
+              
+              {!showBonusQuestion &&(
+                <>
+                 <button
+                type="button"
+                onClick={handleBonusQuestionContinue}
+                className="flex-1 px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition-colors"
+              >
+                Continue
               </button>
+              <button
+                type="button"
+                onClick={()=>{
+                  handleBonusQuestionSkip();
+                }}
+                className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition-colors"
+              >
+                Skip
+              </button>
+              </>
+              )}
+            
             </div>
           </form>
         </div>

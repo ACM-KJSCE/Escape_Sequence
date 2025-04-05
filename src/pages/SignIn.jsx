@@ -61,7 +61,7 @@ const SignIn = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <div>
-        <img className="h-16" src="logo_withoutbg.png" alt="" />
+        <img className="h-24 mb-5" src="logo_withoutbg.png" alt="" />
       </div>
       <div>
         <img className="h-24" src="esc.png" alt="" />

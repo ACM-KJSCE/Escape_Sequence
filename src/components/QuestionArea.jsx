@@ -19,6 +19,8 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
         const userRef = doc(db, "allowed_users", userId);
         const userDoc = await getDoc(userRef);
 
+        // console.log("Fetching bonus question attempt status...")
+
         if (userDoc.exists()) {
           const bonusAttempted = userDoc.data().bonusQuestionAttempted || false;
           setBonusQuestionAttempted(bonusAttempted);
@@ -33,16 +35,19 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
     const checkBonusQuestionTime = () => {
       const currentTime = new Date();
       const elapsedTime = currentTime - startTime;
+
       
-      if (elapsedTime >= 9 * 60 * 1000 && elapsedTime < 11 * 60 * 1000 && compq.length >= 2 && !bonusQuestionAttempted) {
+      if (elapsedTime >= 30 * 60 * 1000 && elapsedTime < 35 * 60 * 1000  && !bonusQuestionAttempted) {
         const mockBonusQuestion = {
           content: "Does tech team work",
           correctAnswer: import.meta.env.VITE_APP_BONUS_ANSWER_KEY
         };
-        setBonusQuestion(mockBonusQuestion);
+        setBonusQuestion(mockBonusQuestion)
         setShowBonusQuestionPrompt(true);
       }
     };
+
+    // console.log("Checking bonus question time...")
 
     const timer = setInterval(checkBonusQuestionTime, 1000);
 
@@ -105,7 +110,6 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
   };
 
   const handleBonusQuestionContinue = () => {
-    setShowBonusQuestionPrompt(false);
     setShowBonusQuestion(true);
   };
 
@@ -147,7 +151,7 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
     try {
       const userRef = doc(db, "allowed_users", userId);
       await updateDoc(userRef, {
-        bonusTime: 12000,
+        bonusTime: 2,
         bonusQuestionAttempted: true,
       });
     } catch (error) {
@@ -208,7 +212,7 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
         </form>
       </div>
 
-      {showBonusQuestionPrompt && !bonusQuestionAttempted && (
+      {/* {showBonusQuestionPrompt && !bonusQuestionAttempted && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-8 max-w-md w-full">
             <h3 className="text-2xl font-bold mb-4 text-gray-800">Bonus Question Opportunity!</h3>
@@ -229,15 +233,35 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
-      {showBonusQuestion && (
+      {/* {showBonusQuestion && (
         <BonusQuestion
           question={bonusQuestion}
           onClose={() => {
             setShowBonusQuestion(false);
             setBonusQuestionAttempted(true);
           }}
+          
+          handleBonusQuestionContinue={handleBonusQuestionContinue}
+          handleBonusQuestionSkip={handleBonusQuestionSkip}
+          onSubmit={handleBonusQuestionSubmit}
+          onTimeUp={handleBonusQuestionTimeUp}
+        />
+      )} */}
+
+      {showBonusQuestionPrompt && !bonusQuestionAttempted && (
+        <BonusQuestion
+          question={bonusQuestion}
+          onClose={() => {
+            setShowBonusQuestion(false);
+            setBonusQuestionAttempted(true);
+          }}
+          
+          setShowBonusQuestion={setShowBonusQuestion}
+          showBonusQuestion={showBonusQuestion}
+          handleBonusQuestionContinue={handleBonusQuestionContinue}
+          handleBonusQuestionSkip={handleBonusQuestionSkip}
           onSubmit={handleBonusQuestionSubmit}
           onTimeUp={handleBonusQuestionTimeUp}
         />
