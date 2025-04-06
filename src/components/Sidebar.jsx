@@ -8,6 +8,7 @@ function Sidebar({ activeQuestion, completedQuestions, onQuestionChange, onLogou
     { id: 4, label: "Q4" },
     { id: 5, label: "Q5" },
     { id: 6, label: "Q6" },
+    { id: 7, label: "Q7" },
     { id: "leaderboard", label: "Leaderboard" },
   ]
   

@@ -48,6 +48,13 @@ const quizStartTime = {
       "content": "BrainRot Final Boss", 
       "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/Brainrot.png?alt=media&token=192baa50-d81d-4227-a20b-127762ddff21",
       "correctAnswer": import.meta.env.VITE_APP_ANSWER_6_KEY 
+  },
+  {
+    id: 7,
+    title:"Question 7",
+    content:"Delivery Finale",
+    imageUrl:"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/Last.png?alt=media&token=62143df1-afb1-4dcb-9cf1-5efde288e8a1",
+    correctAnswer: import.meta.env.VITE_APP_ANSWER_7_KEY
   }
   ];
 
