@@ -25,7 +25,7 @@ const quizStartTime = {
       "id": 3, 
       "title": "Question 3", 
       "content": "GraphPaglu", 
-      "imageUrl":"...",
+      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/GraphPaglu.png?alt=media&token=e73496b4-ff64-4174-abcc-c57e9f290727",
       "correctAnswer": import.meta.env.VITE_APP_ANSWER_3_KEY
   },
   { 
@@ -39,7 +39,7 @@ const quizStartTime = {
       "id": 5, 
       "title": "Question 5", 
       "content": "TreePaglu",
-      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/TreePaglu.png?alt=media&token=0d3a8f1e-8c4b-4b2c-bd6e-7f6f9a8a5b9b", 
+      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/TreePaglu.png?alt=media&token=611f3c36-ac87-438d-81bb-ef5309222eaa", 
       "correctAnswer": import.meta.env.VITE_APP_ANSWER_5_KEY
   },
   { 
