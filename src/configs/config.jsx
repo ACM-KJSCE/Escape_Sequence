@@ -11,7 +11,7 @@ const quizStartTime = {
       "id": 1, 
       "title": "Question 1", 
       "content": "2Functions", 
-      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/2Function.png?alt=media&token=a1ef9aa4-f773-475d-b700-ce492bb1d1f4",
+      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/2Functions.png?alt=media&token=7364b67f-02bd-43e1-87b1-0533cc518966",
       "correctAnswer": import.meta.env.VITE_APP_ANSWER_1_KEY 
   },
   { 
