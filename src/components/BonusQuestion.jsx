@@ -31,7 +31,7 @@ function BonusQuestion({ question, onClose, onSubmit, onTimeUp,handleBonusQuesti
 
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+    <div className="h-full absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
       <div className="bg-gray-800 w-full max-w-2xl p-6 rounded-xl shadow-2xl border-2 border-purple-500 animate-bounce-in">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-purple-400">⭐ Choo-Choo Cipher (BonusQuestion) ⭐</h2>
@@ -49,7 +49,7 @@ function BonusQuestion({ question, onClose, onSubmit, onTimeUp,handleBonusQuesti
         </div>
         
         <div className="mb-6">
-          <h3 className="text-sm text-gray-300 mb-1">Reward: -2 minutes | Penalty: +2 minutes</h3>
+          <h3 className="text-sm text-gray-300 mb-1">Reward: -5 minutes | Penalty: +5 minutes</h3>
           <form onSubmit={handleSubmit}>
             <input
               type="text"
