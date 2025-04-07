@@ -16,12 +16,12 @@ const hints=[
         text:"Q5: Check the properties of the tree, and try to solve using that pattern.",
     },
     {
-        text:"Q6: Yo bro find me the pairs of x and y values which can exist for following",
+        text:"Q6: Yo bro find me the number of pairs for x, y which can exist for the given three conditions.",
         url:"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/Brainrot%20tables%20(1).png?alt=media&token=42e237a3-55aa-4e79-8630-41a949523e98"
     },
     {
         text:"",
-        url:"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/Brainrot%20tables%20(1).png?alt=media&token=42e237a3-55aa-4e79-8630-41a949523e98"
+        url:"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/Brainrot%20tables%20(2).png?alt=media&token=7c469129-d00c-427f-928d-8eba3a4cc0c0"
     },
     {
         text:"",
