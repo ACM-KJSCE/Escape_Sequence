@@ -8,6 +8,7 @@ import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import Hints from "../components/Hints";
 import QuizRestrictions from "../components/QuizRestrictions";
 import { questions, quizStartTime } from "../configs/config";
+import ThankYou from "./ThankYou";
 
 function Dashboard() {
   const [activeQuestion, setActiveQuestion] = useState(1);
@@ -235,7 +236,9 @@ function Dashboard() {
             ))}
           </div>
           
-          {(activeQuestion === "leaderboard" || timeRemaining <= 0 || completedQuestions.length === questions.length) ? (
+          {completedQuestions.length === questions.length ? (
+              <ThankYou />
+          ) : (activeQuestion === "leaderboard" || timeRemaining <= 0) ? (
               <Leaderboard 
                 timeRemaining={timeRemaining}
                 setTimeRemaining={setTimeRemaining}
