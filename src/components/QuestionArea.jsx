@@ -37,7 +37,7 @@ function QuestionArea({ question, onSubmit, userId, startTime, compq }) {
       const elapsedTime = currentTime - startTime;
 
       
-      if (elapsedTime >= 30 * 60 * 1000 && elapsedTime < 35 * 60 * 1000  && !bonusQuestionAttempted) {
+      if (elapsedTime >= 10 * 60 * 1000 && elapsedTime < 15 * 60 * 1000  && !bonusQuestionAttempted) {
         const mockBonusQuestion = {
           content: "Does tech team work",
           correctAnswer: import.meta.env.VITE_APP_BONUS_ANSWER_KEY,
