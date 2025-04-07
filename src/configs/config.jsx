@@ -39,7 +39,7 @@ const quizStartTime = {
       "id": 5, 
       "title": "Question 5", 
       "content": "TreePaglu",
-      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/TreePaglu.png?alt=media&token=611f3c36-ac87-438d-81bb-ef5309222eaa", 
+      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/segmenttree.png?alt=media&token=0a5b7cd9-7861-40dc-b44b-d9fc0cf8cdf5", 
       "correctAnswer": import.meta.env.VITE_APP_ANSWER_5_KEY
   },
   { 
