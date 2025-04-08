@@ -46,7 +46,7 @@ const quizStartTime = {
       "id": 6, 
       "title": "Question 6", 
       "content": "BrainRot Final Boss", 
-      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/Brainrot.png?alt=media&token=192baa50-d81d-4227-a20b-127762ddff21",
+      "imageUrl":"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/brainroty.png?alt=media&token=4e0e5690-00af-4660-bf67-0b6a965e44c7",
       "correctAnswer": import.meta.env.VITE_APP_ANSWER_6_KEY 
   },
   {
