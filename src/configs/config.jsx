@@ -53,7 +53,7 @@ const quizStartTime = {
     id: 7,
     title:"Question 7",
     content:"Delivery Finale",
-    imageUrl:"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/Last.png?alt=media&token=62143df1-afb1-4dcb-9cf1-5efde288e8a1",
+    imageUrl:"https://firebasestorage.googleapis.com/v0/b/acm-fy-rep-login.appspot.com/o/miniDistance.png?alt=media&token=fb4de220-abed-46ed-80f5-a5c56d8bf9b4",
     correctAnswer: import.meta.env.VITE_APP_ANSWER_7_KEY
   }
   ];
